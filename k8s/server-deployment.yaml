@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment #object type
+metadata:
+    name: server-deployment #name of object we going to create. so, deployment will have name of client-deployment
+    labels:
+        component: web
+spec:
+    replicas: 3 #number of different pods that it will create. Create 1 pod using template shown below. 
+    selector: #
+        matchLabels:
+            component: server #component inside application we waorking on is server
+
+    template: #listing out configuration of every single pod created by deployment object. Every pod created will have label as web and image as multi-client
+        metadata:
+            labels:
+                component: server #label must match up with the selector tag
+        spec:
+            containers:
+                - name: server
+                  image: stephengrider/multi-server #image of docker id. we have to add enviornment variable here
+                  ports: 
+                        - containerPort: 5000
+                  env:
+                    - name: REDIS_HOST #name of envrionmental variable
+                      value: redis-cluster-ip-service #value of envrionmental variable. reference how its going to reach out to redis. 
+                      #We give name of the clusterIP to get into redis pod
+                    - name: REDIS_PORT
+                      value: "6379"
+                    - name: PGUSER
+                      value: postgres
+                    - name: PGHOST
+                      value: postgres-cluster-ip-service
+                    - name: PGPORT
+                      value: "5432"
+                    - name: PGDATABASE
+                      value: postgres
+                    - name: PGPASSWORD
+                      valueFrom:
+                        secretKeyRef:
+                            name: pgpassword
+                            key: PGPASSWORD #we could change this to anything but since we have it in our interactive cmd PGPASSWORD therefore, we wrote that
+
+
+                      
+                    

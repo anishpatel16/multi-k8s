@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+    name: server-cluster-ip-service
+spec:
+    type: ClusterIP
+    selector: #what set of pods it must provide access to? it should provide access to multi-service pod.
+        component: server #in server-deployment we have label server so, we use that for access
+    ports:
+        - port: 5000 #The port property is going to be how other pods or other objects inside of our cluster are going toaccess the pod that we are kind of 
+        #governing access to and the target port is going to be the port on the target pod that we are providing access to.better to keep 3000 for port
+        #multiserver uses 5000 for deployment side in the image
+          targetPort: 5000
+
+    

@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment #object type
+metadata:
+    name: postgres-deployment #name of object we going to create. so, deployment will have name of client-deployment
+spec:
+    replicas: 1 #number of different pods that it will create. Create 1 pod using template shown below. 
+    selector: #
+        matchLabels:
+          component: postgres #component inside application we waorking on is server
+
+    template: #listing out configuration of every single pod created by deployment object. Every pod created will have label as web and image as multi-client
+        metadata:
+            labels:
+                component: postgres #label must match up with the selector tag
+        spec:
+            #request on pod for reach out to kubernetes that I need long term storage that information we need are in database-persistent-volume-claim object
+            #allocate the storage in this volume section
+            volumes:
+                - name: postgres-storage
+                  persistentVolumeClaim:
+                    claimName: database-persistent-volume-claim #realize that we need to ho to local harddrive but if cloud provider then write name of the cloud and shit
+            containers:
+                - name: postgres
+                  image: postgres #image of docker id. we have to add enviornment variable here
+                  ports: 
+                    - containerPort: 5432
+                # 
+                  volumeMounts:
+                    - name: postgres-storage #go back to volume entry and ask for storage that we ask kubernetes for 
+                      mountPath: /var/lib/postgresql/data #designate where in the storage the items is going to be stored
+                      subPath: postgres #any data inside mounthpath will be storagd in the persistent-volume claim therefore, we have same postgres volume name here
+                      #told copy of postgres the pwd when postgres tried to connect and what that secret password is.
+                  env:
+                    - name: PGPASSWORD
+                      valueFrom:
+                        secretKeyRef:
+                            name: pgpassword
+                            key: PGPASSWORD

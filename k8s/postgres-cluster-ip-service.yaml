@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service
+metadata:
+    name: postgres-cluster-ip-service
+spec:
+    type: ClusterIP
+    selector: #what set of pods it must provide access to? it should provide access to multi-service pod.
+        component: postgres #in server-deployment we have label server so, we use that for access
+    ports:
+        - port: 5432 #The port property is going to be how other pods or other objects inside of our cluster are going toaccess the pod that we are kind of 
+          targetPort: 5432
+
+    

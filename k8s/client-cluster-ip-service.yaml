@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Service
+metadata:
+    name: client-cluster-ip-service
+spec:
+    type: ClusterIP
+    selector:
+        component: web
+    ports:
+        - port: 3000 #The port property is going to be how other pods or other objects inside of our cluster are going toaccess the pod that we are kind of 
+        #governing access to and the target port is going to be the port on the target pod that we are providing access to.better to keep 3000 for port
+          targetPort: 3000
+
+    

@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+kind: Deployment #object type
+metadata:
+    name: redis-deployment #name of object we going to create. so, deployment will have name of client-deployment
+spec:
+    replicas: 1 #number of different pods that it will create. Create 1 pod using template shown below. 
+    selector: #
+        matchLabels:
+            component: redis #component inside application we waorking on is server
+
+    template: #listing out configuration of every single pod created by deployment object. Every pod created will have label as web and image as multi-client
+        metadata:
+            labels:
+                component: redis #label must match up with the selector tag
+        spec:
+            containers:
+                - name: redis
+                  image: redis #image of docker id. we have to add enviornment variable here
+                  ports:
+                    - containerPort: 6379
